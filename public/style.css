@@ -1,0 +1,38 @@
+@import 'css/pure.css';
+@import 'css/gtk.css';
+
+body {
+  /* Forçar o body no browser */
+  position: absolute;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  margin: 0;
+  right: 0;
+  left: 0;
+  top: 0;
+
+  /* Desabilitar seleção */
+  -webkit-user-select: none !important;
+  user-select: none !important;
+
+  /* Desabilitar scrollbar */
+  overflow: hidden !important;
+}
+
+body, window {
+  background-color: white;
+  font-family: 'Arial, Helvetica, sans-serif' !important;
+  font-size: 12px !important;
+}
+
+button {
+  border: none;
+  border-radius: 1px;
+  padding: 4px;
+}
+
+.pure-menu.pure-menu-horizontal {
+  background-color: gainsboro;
+}

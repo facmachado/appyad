@@ -14,6 +14,11 @@ window.onpopstate = function () {
   history.go(+1);
 };
 
-function sendcmd(el) {
-  location.replace(`#${btoa(el.getAttribute('cmd'))}`);
-}
+/* Executar os comandos em Shell Script dos links */
+document.addEventListener('DOMContentLoaded', function() {
+  this.querySelectorAll('a').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      location.replace(`#${btoa(e.target.getAttribute('cmd'))}`, false);
+    });
+  });
+});

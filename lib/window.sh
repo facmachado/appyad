@@ -4,10 +4,12 @@
 # Sobre
 #
 function win_about() {
-  yad --center --on-top --fixed --skip-taskbar --undecorated  \
-    --close-on-unfocus --borders=20 --gtkrc=public/style.css  \
-    --buttons-layout=center --no-buttons                      \
-    --text-align=center --text='Uma vitória a cada passo'
+  yad --gtkrc=public/style.css                \
+    --on-top --center --fixed --skip-taskbar  \
+    --close-on-unfocus --borders=20           \
+    --buttons-layout=center --button=yad-ok   \
+    --text-align=center                       \
+    --text='Uma vitória a cada passo\n'
 }
 
 #

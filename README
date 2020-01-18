@@ -1,1 +1,32 @@
 System template using YAD + HTML/JS/CSS + custom GTK 3 theme
+
+sysyad
+├── app.sh
+├── bin
+│   └── ...
+├── data
+├── lib
+│   ├── api.sh
+│   ├── app.conf
+│   ├── csv.sh
+│   ├── window.sh
+│   └── ...
+├── LICENSE
+├── log
+├── public
+│   ├── app.js
+│   ├── css
+│   │   ├── gtk.css
+│   │   ├── pure.css
+│   │   └── ...
+│   ├── html
+│   │   └── ...
+│   ├── index.html
+│   ├── js
+│   │   └── ...
+│   └── style.css
+├── README
+├── test
+│   ├── test.sh
+│   └── ...
+└── tmp

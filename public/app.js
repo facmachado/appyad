@@ -16,7 +16,7 @@ window.onpopstate = function () {
 
 /* Executar os comandos em Shell Script dos links */
 document.addEventListener('DOMContentLoaded', function() {
-  this.querySelectorAll('a').forEach(function(el) {
+  this.querySelectorAll('a[href^="#"]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       location.replace(`#${btoa(e.target.getAttribute('cmd'))}`, false);
     });

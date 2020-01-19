@@ -28,4 +28,4 @@ fi
 source lib/app.conf
 source lib/window.sh
 
-win_main "$@" 2>/dev/null
+win_main 2>/dev/null

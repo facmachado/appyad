@@ -14,9 +14,9 @@ window.onpopstate = function () {
   history.go(+1);
 };
 
-/* Executar os comandos em Shell Script dos links */
+/* Executar os comandos a partir dos elementos */
 document.addEventListener('DOMContentLoaded', function() {
-  this.querySelectorAll('a[href^="#"]').forEach(function(el) {
+  this.querySelectorAll('[cmd]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       location.replace(`#${btoa(e.target.getAttribute('cmd'))}`, false);
     });

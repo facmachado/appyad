@@ -1,5 +1,9 @@
-@import 'css/pure.css';
-@import 'css/gtk.css';
+/* @import 'css/gtk.css'; */
+
+*, :root * {
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
 
 body {
   /* Forçar o body no browser */
@@ -16,23 +20,38 @@ body {
   /* Desabilitar seleção */
   -webkit-user-select: none !important;
   user-select: none !important;
-
-  /* Desabilitar scrollbar */
-  overflow: hidden !important;
 }
 
 body, window {
   background-color: white;
-  font-family: 'Arial, Helvetica, sans-serif' !important;
-  font-size: 12px !important;
+  color: black;
 }
 
-button {
-  border: none;
-  border-radius: 1px;
-  padding: 4px;
+button, .button {
+  background-color: silver;
+  background-image: none;
+  border-color: gray;
+  border-image: none;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  color: black;
+  height: 30px;
+  padding: 3px 12px;
+  width: 80px;
 }
 
-.pure-menu.pure-menu-horizontal {
-  background-color: gainsboro;
+button:hover, .button:hover {
+  background-color: lightgray;
+  border-color: silver;
+}
+
+button:active, .button:active {
+  background-color: ghostwhite;
+}
+
+button:disabled, .button:disabled {
+  background-color: lightgray;
+  border-color: silver;
+  color: silver
 }

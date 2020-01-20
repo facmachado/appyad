@@ -4,12 +4,12 @@
 # Sobre
 #
 function win_about() {
-  yad --gtkrc="$GTKRC"                        \
+  yad --gtkrc="$GTKRC" --title='Sobre'        \
     --on-top --center --fixed --skip-taskbar  \
     --close-on-unfocus --borders=20           \
-    --buttons-layout=center --button=yad-ok   \
     --text-align=center                       \
-    --text='Uma vitória a cada passo\n'
+    --text='Uma vitória a cada passo\n'       \
+    --buttons-layout=center --button=yad-ok
 }
 
 #
@@ -17,13 +17,12 @@ function win_about() {
 #
 function win_chpwd() {
   yad --gtkrc="$GTKRC" --title='Alterar senha'  \
-    --on-top --center --fixed --skip-taskbar  \
-    --borders=5 --buttons-layout=center       \
-    --form --align=right                      \
-    --field='Senha atual:H'                   \
-    --field='Nova senha:H'                    \
-    --field='Confirmar:H'                     \
-    --separator=: | sed 's/:$//'
+    --on-top --center --fixed --skip-taskbar    \
+    --borders=10 --form --align=right           \
+    --field='Senha atual:H'                     \
+    --field='Nova senha:H'                      \
+    --field='Confirmar:H'                       \
+    --buttons-layout=center
 }
 
 #
@@ -37,24 +36,22 @@ function win_form() {
 # Caixa de logon de usuário
 #
 function win_logon() {
-  yad --gtkrc="$GTKRC" --title='Logon - Tecle ENTER'  \
+  yad --gtkrc="$GTKRC" --title='Logon'        \
     --on-top --center --fixed --skip-taskbar  \
-    --borders=5 --buttons-layout=center       \
-    --form --align=right                      \
+    --borders=10 --form --align=right         \
     --field='Usuário'                         \
     --field='Senha:H'                         \
-    --separator=, --quoted-output | tr "'" '"' | sed 's/,$//'
+    --buttons-layout=center
 }
 
 #
 # Menu principal
 #
 function win_main() {
-  yad --width=800 --height=600 --maximized  \
-    --center --borders=0 --no-buttons       \
-    --html --browser --uri-handler=echo     \
-    --uri="$INDEX" 2>/dev/null |            \
-  while read -r line; do
+  yad --gtkrc="$GTKRC" --width=800 --height=600        \
+    --maximized --center --borders=0 --html --browser  \
+    --uri-handler=echo --uri="$INDEX" --no-buttons     \
+  2>/dev/null | while read -r line; do
     cmd=$(cut -d# -f2 <<<"$line" | base64 -dw0)
     $cmd
   done
@@ -64,10 +61,10 @@ function win_main() {
 # Menu genérico
 #
 function win_menu() {
-  yad --gtkrc="$GTKRC" --title='Escolha a opção desejada'   \
-    --on-top --center --fixed --skip-taskbar  \
-    --width=220 --height=220 --borders=10 --no-buttons     \
-    --list --no-headers --column=OPTION 'Cadastros' 'Movimentos' 'Consultas' 'Relatórios' 'Configurações' 'Alterar senha' 'Sobre' 'Finalizar'
+  yad --gtkrc="$GTKRC" --width=220 --height=220 --title="$1"  \
+    --on-top --center --fixed --skip-taskbar --borders=10     \
+    --list --no-headers --column=OPTION "${2:*}"              \
+    --buttons-layout=center
 }
 
 #
@@ -88,10 +85,11 @@ function win_report() {
 # Caixa de leitura de código de barras ou QR
 #
 function win_scancode() {
-  yad --gtkrc="$GTKRC" --title='Passe o cartão pela leitora'  \
+  yad --gtkrc="$GTKRC" --width=500            \
+    --title='Passe o cartão pela leitora'     \
     --on-top --center --fixed --skip-taskbar  \
-    --width=500 --borders=10 --no-buttons     \
-    --entry --hide-text
+    --borders=12 --entry --hide-text          \
+    --no-buttons
 }
 
 #

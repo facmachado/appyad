@@ -18,7 +18,8 @@ function win_about() {
 function win_chpwd() {
   yad --gtkrc="$GTKRC" --title='Alterar senha'  \
     --on-top --center --fixed --skip-taskbar    \
-    --borders=10 --form --align=right           \
+    --close-on-unfocus --borders=10             \
+    --form --align=right                        \
     --field='Senha atual:H'                     \
     --field='Nova senha:H'                      \
     --field='Confirmar:H'                       \
@@ -48,13 +49,15 @@ function win_logon() {
 # Menu principal
 #
 function win_main() {
-  yad --gtkrc="$GTKRC" --width=800 --height=600        \
-    --maximized --center --borders=0 --html --browser  \
-    --uri-handler=echo --uri="$INDEX" --no-buttons     \
-  2>/dev/null | while read -r line; do
-    cmd=$(cut -d# -f2 <<<"$line" | base64 -dw0)
-    $cmd
-  done
+  while :; do
+    if read -r line 2>/dev/null; then
+      cmd=$(cut -d# -f2 <<<"$line" | base64 -dw0)
+      $cmd
+    fi
+  done < <(yad --gtkrc="$GTKRC"                         \
+    --width=360 --height=640 --center --borders=0       \
+    --html --browser --uri-handler=echo --uri="$INDEX"  \
+    --no-buttons)
 }
 
 #

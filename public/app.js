@@ -18,7 +18,16 @@ window.onpopstate = function () {
 document.addEventListener('DOMContentLoaded', function() {
   this.querySelectorAll('[cmd]').forEach(function(el) {
     el.addEventListener('click', function(e) {
-      location.replace(`#${btoa(e.target.getAttribute('cmd'))}`, false);
+      document.querySelectorAll('fieldset').forEach(function(el) {
+        el.disabled = true;
+      });
+      location.replace(`#${btoa(e.target.getAttribute('cmd'))}`);
     });
   });
+
+  document.body.onfocus = function() {
+    document.querySelectorAll('fieldset').forEach(function(el) {
+      el.disabled = false;
+    });
+  };
 });

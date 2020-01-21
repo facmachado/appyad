@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>App YAD</title>
+  <title>Menu principal</title>
   <meta charset="utf-8">
   <meta http-equiv="Expires" content="Thu, 01 Jan 1970 00:00:00 GMT">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -16,9 +16,17 @@
 <body>
   <section>
     <fieldset>
+      <legend>Usuário</legend>
+      <button cmd="win_chpwd">Alterar senha</button>
+      <button cmd="force_quit">Logoff</button>
+    </fieldset>
+  </section>
+  <section>
+    <fieldset>
       <legend>Cadastros</legend>
       <button>Clientes</button>
       <button>Fornecedores</button>
+      <button>Produtos</button>
     </fieldset>
   </section>
   <section>
@@ -34,6 +42,7 @@
     <fieldset>
       <legend>Consultas</legend>
       <button>Últimos registros</button>
+      <button>Saldo atual</button>
     </fieldset>
   </section>
   <section>
@@ -46,14 +55,16 @@
   <section>
     <fieldset>
       <legend>Administração</legend>
+      <button>Ajustes</button>
+      <button>Grupos</button>
       <button>Usuários</button>
-      <button cmd="win_chpwd">Alterar senha</button>
     </fieldset>
   </section>
   <section>
     <fieldset>
       <legend>Ajuda</legend>
       <button cmd="win_about">Sobre</button>
+      <button>Licença</button>
     </fieldset>
   </section>
 </body>

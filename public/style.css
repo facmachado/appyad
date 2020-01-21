@@ -28,7 +28,7 @@ body:disabled * {
 }
 
 body, window {
-  background-color: white;
+  background-color: gainsboro;
   color: black;
 }
 

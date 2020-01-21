@@ -28,4 +28,9 @@ fi
 source lib/app.conf
 source lib/window.sh
 
+function force_quit() {
+  killall yad
+  exit 0
+}
+
 win_main 2>/dev/null

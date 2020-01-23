@@ -54,9 +54,9 @@ function win_main() {
       cmd=$(cut -d# -f2 <<<"$line" | base64 -dw0)
       $cmd
     fi
-  done < <(yad --gtkrc="$GTKRC" --undecorated  \
-    --width=360 --height=493 --borders=0       \
-    --html --browser --uri-handler=echo        \
+  done < <(yad --gtkrc="$GTKRC" --maximized  \
+    --width=360 --height=493 --borders=0     \
+    --html --browser --uri-handler=echo      \
     --uri="$INDEX" --no-buttons)
 }
 

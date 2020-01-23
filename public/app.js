@@ -10,11 +10,13 @@ window.onpopstate = _ => history.go(+1);
 
 /* Funções de foco e desfoco */
 function do_focus() {
+  document.body.classList.remove('disabled');
   document
     .querySelectorAll('fieldset')
     .forEach(e0 => e0.disabled = false);
 }
 function do_blur() {
+  document.body.classList.add('disabled');
   document
     .querySelectorAll('fieldset')
     .forEach(e1 => e1.disabled = true);

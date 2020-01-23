@@ -33,4 +33,5 @@ function force_quit() {
   exit 0
 }
 
-win_main # 2>/dev/null
+win_main 2>/dev/null
+test "$?" && force_quit

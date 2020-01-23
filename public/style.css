@@ -23,8 +23,8 @@ body {
   user-select: none !important;
 }
 
-body:disabled * {
-  opacity: 0.5;
+body.disabled {
+  pointer-events: none;
 }
 
 body, window {
@@ -96,8 +96,12 @@ ul, ul > li {
   list-style-type: none;
 }
 
+.nav {
+  border-style: none;
+}
+
 .nav, .nav > .menubar {
-  background-color: silver;
+  background-color: gainsboro;
   margin: 0;
   padding: 0;
 }
@@ -108,6 +112,8 @@ ul, ul > li {
 
 .menu {
   display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .menuitem > .menu.left {
@@ -128,19 +134,27 @@ ul, ul > li {
   z-index: 2000;
 }
 
+.menuitem:hover button:hover {
+  background-color: silver;
+}
+
 .menuitem {
-  background-color: white;
+  background-color: inherit;
   background-image: none;
   border-color: black;
   min-width: 120px;
+  width: inherit;
 }
 
 .menuitem > button {
+  background-color: inherit;
   border-style: none;
   border-radius: 0;
   cursor: pointer;
   min-width: inherit;
   text-align: left;
+  white-space: nowrap;
+  width: inherit;
 }
 
 .menuitem > .menu {

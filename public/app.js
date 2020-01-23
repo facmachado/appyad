@@ -1,4 +1,4 @@
-/* jshint esversion: 6 */
+/* jshint esversion: 8 */
 
 /* Desabilitar botão direito e arrastar */
 document.oncontextmenu = _ => false;

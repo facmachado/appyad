@@ -87,3 +87,76 @@ input:disabled, entry:disabled {
 input:focus, entry:focus {
   border-color: lightgray;
 }
+
+/*  */
+
+ul, ul > li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.nav, .nav > .menubar {
+  background-color: silver;
+  margin: 0;
+  padding: 0;
+}
+
+.menubar > .menu.top {
+  display: inline-flex;
+}
+
+.menu {
+  display: none;
+}
+
+.menuitem > .menu.left {
+  display: inline-flexbox;
+  float: left;
+}
+
+.menuitem:hover > .menu.left {
+  display: inline-block;
+  left: -1px;
+  position: absolute;
+  top: 30px;
+  z-index: 1000;
+}
+
+.menuitem:hover {
+  position: relative;
+  z-index: 2000;
+}
+
+.menuitem {
+  background-color: white;
+  background-image: none;
+  border-color: black;
+  min-width: 120px;
+}
+
+.menuitem > button {
+  border-style: none;
+  border-radius: 0;
+  cursor: pointer;
+  min-width: inherit;
+  text-align: left;
+}
+
+.menuitem > .menu {
+  background-color: inherit;
+  border: 1px silver solid;
+}
+
+.menuitem:hover > .menu {
+  display: inline-block;
+  left: 120px;
+  position: absolute;
+  top: -1px;
+  z-index: 1000;
+}
+
+.menuitem:hover {
+  position: relative;
+  z-index: 2000;
+}

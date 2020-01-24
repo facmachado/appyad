@@ -116,12 +116,20 @@ ul, ul > li {
   padding: 0;
 }
 
-.menuitem > .menu.left {
+.menu button:focus,
+.menu:hover {
+  position: relative;
+  z-index: 2000;
+}
+
+.menu.top,
+.menu.left {
   display: inline-flexbox;
   float: left;
 }
 
-.menuitem:hover > .menu.left {
+.menu.top button:focus + .menu.left,
+.menu.top > .menuitem:hover > .menu.left {
   display: inline-block;
   left: -1px;
   position: absolute;
@@ -129,11 +137,16 @@ ul, ul > li {
   z-index: 1000;
 }
 
-.menuitem:hover {
-  position: relative;
-  z-index: 2000;
+.menu.left button:focus + .menu,
+.menu.left > .menuitem:hover > .menu {
+  display: inline-block;
+  left: 120px;
+  position: absolute;
+  top: -1px;
+  z-index: 1000;
 }
 
+/*
 .menuitem:hover button:hover {
   background-color: silver;
 }
@@ -161,16 +174,4 @@ ul, ul > li {
   background-color: inherit;
   border: 1px silver solid;
 }
-
-.menuitem:hover > .menu {
-  display: inline-block;
-  left: 120px;
-  position: absolute;
-  top: -1px;
-  z-index: 1000;
-}
-
-.menuitem:hover {
-  position: relative;
-  z-index: 2000;
-}
+*/

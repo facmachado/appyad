@@ -146,7 +146,9 @@ ul, ul > li {
   top: -1px;
   z-index: 1000;
 }
+*/
 
+.menuitem:focus button:focus,
 .menuitem:hover button:hover {
   background-color: silver;
 }
@@ -174,4 +176,3 @@ ul, ul > li {
   background-color: inherit;
   border: 1px silver solid;
 }
-*/

@@ -9,31 +9,39 @@ history.pushState(null, null, document.location.href);
 window.onpopstate = _ => history.go(+1);
 
 $(_ => {
-  window.open('', '_self', '');
 
-  $(window).on({
-    'focus': _ => $('fieldset').prop('disabled', false),
-    'blur': _ => $('fieldset').prop('disabled', true)
+  $(window).on('blur', _ => {
+    $('.menu:not(.top)').hide();
+    $('.nav').prop('disabled', true);
   });
 
-  $('.menuitem > button').on({
-    'click': e => {
-      $(e.target).next().toggle();
-    },
-    'keyup': e => {
-      e.stopPropagation();
-      $(e.target).click();
-    }
+  $(window).on('focus', _ => {
+    $('.nav').prop('disabled', false);
   });
 
-  $('button[cmd]').on({
-    'click': e => {
+  $('button:not([cmd])').on('keyup', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    $(e.target).click();
+  });
+
+  $('.menu:not(.top)').on('blur', e => {
+    $(e.target).hide();
+  });
+
+  $('.nav').on('blur', _ => {
+    $('.menu:not(.top)').hide();
+  });
+
+  $('.menu.top button').on('click', e => {
+    $('.menu:not(.top)').hide();
+    $(e.target).next().show();
+  });
+
+  $('[cmd]').on('click', e => {
+    if ($(e.target).attr('cmd') !== '') {
       $(document).blur();
-      location.replace(`#${btoa($(e.target).prop('cmd'))}`);
-    },
-    'keyup': e => {
-      e.stopPropagation();
-      $(e.target).click();
+      location.replace(`#${btoa($(e.target).attr('cmd'))}`);
     }
   });
 

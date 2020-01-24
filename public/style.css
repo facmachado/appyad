@@ -116,6 +116,7 @@ ul, ul > li {
   padding: 0;
 }
 
+/*
 .menu button:focus,
 .menu:hover {
   position: relative;
@@ -146,7 +147,6 @@ ul, ul > li {
   z-index: 1000;
 }
 
-/*
 .menuitem:hover button:hover {
   background-color: silver;
 }

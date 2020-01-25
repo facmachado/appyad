@@ -9,13 +9,20 @@ history.pushState(null, null, document.location.href);
 window.onpopstate = _ => history.go(+1);
 
 $(_ => {
-
   $(window).on('blur', _ => {
     $('.menu:not(.top)').hide();
     $('.nav').prop('disabled', true);
+    $(document.body).addClass('disabled');
+  });
+
+  $(window).on('click', _ => {
+    if ($('.menu').is(':visible') && !$('.menu button').is(':focus')) {
+      $('.menu:not(.top)').hide();
+    }
   });
 
   $(window).on('focus', _ => {
+    $(document.body).removeClass('disabled');
     $('.nav').prop('disabled', false);
   });
 
@@ -25,17 +32,19 @@ $(_ => {
     $(e.target).click();
   });
 
-  $('.menu:not(.top)').on('blur', e => {
-    $(e.target).hide();
-  });
-
-  $('.nav').on('blur', _ => {
-    $('.menu:not(.top)').hide();
+  $('button:not([cmd])').on('mouseover', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    $(e.target).focus().click();
   });
 
   $('.menu.top button').on('click', e => {
     $('.menu:not(.top)').hide();
     $(e.target).next().show();
+  });
+
+  $('.nav').on('blur', _ => {
+    $('.menu:not(.top)').hide();
   });
 
   $('[cmd]').on('click', e => {
@@ -44,45 +53,4 @@ $(_ => {
       location.replace(`#${btoa($(e.target).attr('cmd'))}`);
     }
   });
-
 });
-
-/*
-Funções de foco e desfoco
-function do_focus() {
-  document.body.classList.remove('disabled');
-  document
-    .querySelectorAll('fieldset')
-    .forEach(e0 => e0.disabled = false);
-}
-function do_blur() {
-  document.body.classList.add('disabled');
-  document
-    .querySelectorAll('fieldset')
-    .forEach(e1 => e1.disabled = true);
-}
-
-Executar os comandos a partir dos elementos
-document.addEventListener('DOMContentLoaded', _ => {
-  document.querySelectorAll('.menu button').forEach(e0 => {
-    e0.addEventListener('click', e => {
-      let el = e.target.parentNode.querySelector('.menu');
-      el.style.display = 'inline-flexbox';
-      console.log(el);
-    });
-  });
-
-  document.querySelectorAll('[cmd]').forEach(e0 => {
-    e0.addEventListener('click', e => {
-      do_blur();
-      location.replace(`#${btoa(e.target.getAttribute('cmd'))}`);
-    });
-  });
-
-  Foco
-  document.body.onfocus = _ => do_focus();
-
-  Desfoco
-  document.body.onblur = _ => do_blur();
-});
-*/

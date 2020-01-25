@@ -57,7 +57,7 @@ function win_main() {
   done < <(yad --gtkrc="$GTKRC" --maximized  \
     --width=360 --height=493 --borders=0     \
     --html --browser --uri-handler=echo      \
-    --uri="$INDEX" --no-buttons)
+    --uri="$INDEX" --no-buttons --no-escape)
 }
 
 #

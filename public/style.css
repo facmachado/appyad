@@ -1,6 +1,6 @@
 /* @import 'css/gtk.css'; */
 
-*, :root * {
+* {
   font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 400;
@@ -88,20 +88,19 @@ input:focus, entry:focus {
   border-color: lightgray;
 }
 
-/*  */
-
 ul, ul > li {
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
-.nav {
+.nav * {
   border-style: none;
 }
 
 .nav, .nav > .menubar {
   background-color: gainsboro;
+  background-image: none;
   margin: 0;
   padding: 0;
 }
@@ -116,54 +115,18 @@ ul, ul > li {
   padding: 0;
 }
 
-/*
-.menu button:focus,
-.menu:hover {
-  position: relative;
-  z-index: 2000;
-}
-
-.menu.top,
-.menu.left {
-  display: inline-flexbox;
-  float: left;
-}
-
-.menu.top button:focus + .menu.left,
-.menu.top > .menuitem:hover > .menu.left {
-  display: inline-block;
-  left: -1px;
+.menu:not(.top) {
+  border: 1px solid silver;
   position: absolute;
-  top: 30px;
   z-index: 1000;
-}
-
-.menu.left button:focus + .menu,
-.menu.left > .menuitem:hover > .menu {
-  display: inline-block;
-  left: 120px;
-  position: absolute;
-  top: -1px;
-  z-index: 1000;
-}
-*/
-
-.menuitem:focus button:focus,
-.menuitem:hover button:hover {
-  background-color: silver;
 }
 
 .menuitem {
-  background-color: inherit;
-  background-image: none;
-  border-color: black;
-  min-width: 120px;
-  width: inherit;
+  width: 120px;
 }
 
 .menuitem > button {
   background-color: inherit;
-  border-style: none;
   border-radius: 0;
   cursor: pointer;
   min-width: inherit;
@@ -172,7 +135,11 @@ ul, ul > li {
   width: inherit;
 }
 
+.menuitem > button:focus,
+.menuitem > button:hover {
+  background-color: silver;
+}
+
 .menuitem > .menu {
   background-color: inherit;
-  border: 1px silver solid;
 }

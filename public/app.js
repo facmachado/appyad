@@ -48,9 +48,10 @@ $(_ => {
   });
 
   $('[cmd]').on('click', e => {
+    e.preventDefault();
     if ($(e.target).attr('cmd') !== '') {
       $(document).blur();
-      location.replace(`#${btoa($(e.target).attr('cmd'))}`);
+      location.replace(`?cmd=${$(e.target).attr('cmd')}`, false);
     }
   });
 });

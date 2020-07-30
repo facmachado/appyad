@@ -1,13 +1,5 @@
-/* @import 'css/gtk.css'; */
-
-* {
-  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-}
 
 body {
-  /* Forçar o body no browser */
   position: absolute;
   overflow: hidden;
   height: 100%;
@@ -18,128 +10,10 @@ body {
   left: 0;
   top: 0;
 
-  /* Desabilitar seleção */
   -webkit-user-select: none !important;
   user-select: none !important;
 }
 
 body.disabled {
   pointer-events: none;
-}
-
-body, window {
-  background-color: gainsboro;
-  color: black;
-}
-
-button, .button {
-  background-color: silver;
-  background-image: none;
-  border-color: gray;
-  border-image: none;
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 1px;
-  color: black;
-  height: 30px;
-  padding: 3px 12px;
-}
-
-button:active, .button:active {
-  background-color: ghostwhite;
-  border-color: lightgray;
-}
-
-button:disabled, .button:disabled {
-  background-color: lightgray;
-  border-color: silver;
-  color: silver
-}
-
-button:focus, .button:focus {
-  border-color: lightgray;
-}
-
-button:hover, .button:hover {
-  background-color: lightgray;
-  border-color: silver;
-}
-
-fieldset {
-  border-style: solid;
-  margin: 2px 10px 8px;
-}
-
-input, entry {
-  background-color: white;
-  background-image: none;
-  border-color: gray;
-  border-radius: 3px;
-  color: black;
-  height: 30px;
-}
-
-input:disabled, entry:disabled {
-  background-color: lightgray;
-  color: silver
-}
-
-input:focus, entry:focus {
-  border-color: lightgray;
-}
-
-ul, ul > li {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-.nav * {
-  border-style: none;
-}
-
-.nav, .nav > .menubar {
-  background-color: gainsboro;
-  background-image: none;
-  margin: 0;
-  padding: 0;
-}
-
-.menubar > .menu.top {
-  display: inline-flex;
-}
-
-.menu {
-  display: none;
-  margin: 0;
-  padding: 0;
-}
-
-.menu:not(.top) {
-  border: 1px solid silver;
-  position: absolute;
-  z-index: 1000;
-}
-
-.menuitem {
-  width: 120px;
-}
-
-.menuitem > button {
-  background-color: inherit;
-  border-radius: 0;
-  cursor: pointer;
-  min-width: inherit;
-  text-align: left;
-  white-space: nowrap;
-  width: inherit;
-}
-
-.menuitem > button:focus,
-.menuitem > button:hover {
-  background-color: silver;
-}
-
-.menuitem > .menu {
-  background-color: inherit;
 }

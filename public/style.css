@@ -1,4 +1,6 @@
 
+@import 'https://unpkg.com/98.css';
+
 body {
   position: absolute;
   overflow: hidden;
@@ -10,10 +12,62 @@ body {
   left: 0;
   top: 0;
 
-  -webkit-user-select: none !important;
+  /* -webkit-user-select: none !important; */
   user-select: none !important;
 }
 
 body.disabled {
   pointer-events: none;
+}
+
+div.menubar {
+  background-color: silver;
+  height: 24px;
+  padding: 0;
+}
+
+ul[class^='level'] button {
+  margin: 0;
+  padding: 0;
+  /* margin-bottom: 0; */
+  /* margin-top: 0; */
+  /* padding-bottom: 0; */
+  /* padding-top: 0; */
+}
+
+ul[class^='level'] button:hover {
+  background-color: #000080;
+  color: #ffffff;
+}
+
+ul[class^='level'] button:active {
+  background-color: gainsboro;
+}
+
+ul.level0 {
+  display: inline-flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.level0 button,
+ul.level0 button:active {
+  box-shadow: none;
+  padding: 0 11px 0 13px;
+}
+
+ul.level1 {
+  border: 1px solid #808080;
+  /* display: none; */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+ul.level1 button {
+  text-align: left;
+  width: 120px;
 }

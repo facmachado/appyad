@@ -1,37 +1,29 @@
 #!/bin/bash
 
-#
-# shellcheck disable=SC1091
-#
+readonly name=$(basename "${0%.*}")
+readonly pidfile="/run/user/$UID/$name-$(date +%s).pid"
+readonly python=$(command -v python3)
+readonly yad=$(command -v yad)
 
-#
-#  Copyright (c) 2020 Flavio Augusto (@facmachado)
-#
-#  This software may be modified and distributed under the terms
-#  of the MIT license. See the LICENSE file for details.
-#
-
-#
-# Declare some vars
-#
-YAD=$(command -v yad)
-# THIS=$(basename "$0")
-
-#
-# Check some dependencies
-#
-if [ ! "$YAD" ]; then
-  echo 'Error: YAD not installed' >&2
+if test -z "$python" -o -z "$yad"; then
+  echo "Error: YAD and Python 3 not installed or not found in your PATH" >&2
   exit 1
 fi
 
-source lib/app.conf
-source lib/window.sh
+readonly index='public/index.html'
+readonly host='127.0.0.1'
+readonly port=65432
 
-function force_quit() {
-  killall yad
+function do_exit() {
+  pkill -SIGTERM -F "$pidfile" && \
+  rm -f "$pidfile"
   exit 0
 }
 
-win_main 2>/dev/null
-test "$?" && force_quit
+$python cgi.py 2>/dev/null & echo $! >"$pidfile"
+
+$yad --width=640 --height=480 --maximized      \
+  --no-buttons --no-escape --borders=0 --html  \
+  --browser --uri="http://$host:$port/$index"  \
+  2>/dev/null
+do_exit

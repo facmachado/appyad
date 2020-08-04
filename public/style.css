@@ -24,15 +24,12 @@ div.menubar {
   background-color: silver;
   height: 24px;
   padding: 0;
+  top: 0;
 }
 
 ul[class^='level'] button {
   margin: 0;
   padding: 0;
-  /* margin-bottom: 0; */
-  /* margin-top: 0; */
-  /* padding-bottom: 0; */
-  /* padding-top: 0; */
 }
 
 ul[class^='level'] button:hover {
@@ -59,7 +56,7 @@ ul.level0 button:active {
 
 ul.level1 {
   border: 1px solid #808080;
-  /* display: none; */
+  display: none;
   list-style: none;
   margin: 0;
   padding: 0;

@@ -14,25 +14,21 @@ $(_ => {
   });
 
 
-  // $('button:not([cmd])').on('keyup', e => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  // });
-
-  // $('button:not([cmd])').on('mouseover', e => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   // $(e.target).focus().click();
-  // });
+  $('ul.level0 button').on({
+    click: e => {
+      $('ul.level0 button').next().hide();
+      $(e.target).next().show();
+    }
+  });
 
 
   $('[cmd]').on('click', e => {
     e.preventDefault();
     e.stopPropagation();
     if ($(e.target).attr('cmd') !== '') {
-      // $(document).blur();
-      // location.replace
-      console.log(`?cmd=${$(e.target).attr('cmd')}`);
+      // $(window).blur();
+      location.replace(`#${btoa($(e.target).attr('cmd'))}`);
     }
+    alert(location.search.split('#')[1]);
   });
 });

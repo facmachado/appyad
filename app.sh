@@ -20,10 +20,13 @@ function do_exit() {
   exit 0
 }
 
+trap do_exit SIGINT
+
 $python cgi.py 2>/dev/null & echo $! >"$pidfile"
 
-$yad --width=640 --height=480 --maximized      \
-  --no-buttons --no-escape --borders=0 --html  \
-  --browser --uri="http://$host:$port/$index"  \
+$yad --width=640 --height=480 --maximized --no-buttons  \
+  --no-escape --borders=0 --window-icon='favicon.ico'   \
+  --html --browser --uri="http://$host:$port/$index"    \
   2>/dev/null
+
 do_exit

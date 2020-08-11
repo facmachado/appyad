@@ -7,7 +7,6 @@
 #  of the MIT license. See the LICENSE file for details.
 #
 
-echo 'Access-Control-Allow-Origin: *'
 echo 'Content-Type: text/plain'
 echo
 

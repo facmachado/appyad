@@ -1,6 +1,14 @@
 /* style.css */
 
-@import 'https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css';
+/**
+ *  Copyright (c) 2020 Flavio Augusto (@facmachado)
+ *
+ *  This software may be modified and distributed under the terms
+ *  of the MIT license. See the LICENSE file for details.
+ */
+
+
+/* General */
 
 body {
   background-color: #dfdfdf;
@@ -20,17 +28,19 @@ body {
   user-select: none !important;
 }
 
-body.disabled {
-  pointer-events: none;
-}
 
-footer {
+/* Hidden footer */
+
+section.footer {
   display: none;
 }
 
+
+/* Menu bar */
+
 div.menubar {
   background-color: white;
-  border: 1px solid #ddd;
+  border: 1px solid #aaaaaa;
   border-radius: 4px;
   height: 24px;
   left: 0;
@@ -39,7 +49,6 @@ div.menubar {
   right: 0;
   top: 0;
 }
-
 ul[class^='level'] button {
   border: none;
   background: none;
@@ -47,31 +56,26 @@ ul[class^='level'] button {
   height: 24px;
   padding: 5px 20px;
 }
-
 ul[class^='level'] button:hover {
   background-color: silver;
 }
-
 ul[class^='level'] button:active {
   background-color: gainsboro;
 }
-
 ul.level0 {
   display: inline-flex;
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 ul.level0 button,
 ul.level0 button:active {
   /* box-shadow: none; */
   /* padding: 0 11px 0 13px; */
 }
-
 ul.level1 {
   background-color: white;
-  border: 1px solid #ddd;
+  border: 1px solid #aaaaaa;
   border-radius: 4px;
   display: none;
   list-style: none;
@@ -80,15 +84,13 @@ ul.level1 {
   position: absolute;
   z-index: 1;
 }
-
 ul.level1 button {
   text-align: left;
   width: 120px;
 }
 
 
-
-/* ---- Styles for toast messages ---- */
+/* Toast messages */
 
 .toast {
   background-image: repeating-linear-gradient(
@@ -112,27 +114,23 @@ ul.level1 button {
   left: 50%;
   top: 5px;
 }
-
-.t-danger, .t-error {
+.t-danger,
+.t-error {
   background-color: #cc0000;
   color: white;
 }
-
 .t-default {
   background-color: silver;
   color: black;
 }
-
 .t-info {
   background-color: #0000ee;
   color: white;
 }
-
 .t-success {
   background-color: green;
   color: white;
 }
-
 .t-warning {
   background-color: orange;
   color: black;

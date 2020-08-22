@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#
+#  Copyright (c) 2020 Flavio Augusto (@facmachado)
+#
+#  This software may be modified and distributed under the terms
+#  of the MIT license. See the LICENSE file for details.
+#
+
+
 readonly name=$(basename "${0%.*}")
 readonly pidfile="/run/user/$UID/$name-$(date +%s).pid"
 readonly python=$(command -v python3)
@@ -10,9 +18,11 @@ if test -z "$python" -o -z "$yad"; then
   exit 1
 fi
 
+
 readonly index='public/index.html'
 readonly host='127.0.0.1'
 readonly port=65432
+
 
 function do_exit() {
   pkill -SIGTERM -F "$pidfile" && \
@@ -20,7 +30,9 @@ function do_exit() {
   exit 0
 }
 
+
 trap do_exit SIGINT
+trap do_exit SIGTERM
 
 $python cgi.py 2>/dev/null & echo $! >"$pidfile"
 

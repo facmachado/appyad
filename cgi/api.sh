@@ -7,6 +7,7 @@
 #  of the MIT license. See the LICENSE file for details.
 #
 
+
 echo 'Content-Type: text/plain'
 echo
 

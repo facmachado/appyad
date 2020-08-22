@@ -1,13 +1,13 @@
+<!-- index.html -->
+
 <!--
-
-  index.html - HTML static page
-
   Copyright (c) 2020 Flavio Augusto (@facmachado)
 
   This software may be modified and distributed under the terms
   of the MIT license. See the LICENSE file for details.
-
 -->
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -17,351 +17,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
   <link rel="stylesheet" type="text/css" href="style.css" media="screen">
   <script type="application/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script type="application/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   <script type="application/javascript" src="app.js"></script>
 </head>
 <body>
   <div class="toast"></div>
-  <div class="menubar">
-    <ul class="level0">
-      <li>
-        <button>Sistema</button>
-        <ul class="level1">
-          <li>
-            <button cmd="win_chpwd">Alterar senha</button>
-          </li>
-          <li>
-            <button cmd="open">Abrir</button>
-          </li>
-          <li>
-            <button cmd="save">Salvar</button>
-          </li>
-          <li>
-            <button cmd="save_as">Salvar como</button>
-          </li>
-          <li>
-            <button cmd="do_exit">Sair</button>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <button>Ajuda</button>
-        <ul class="level1">
-          <li>
-            <button cmd="man">Manual</button>
-          </li>
-          <li>
-            <button cmd="win_about">Sobre</button>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+  <div class="menubar"></div>
+  <div class="viewport"></div>
+  <div class="window"></div>
 
-  <footer>
-    <div class="win" id="winLogin">
-      <span class="llogin">
-        <label for="txUser">Usuário</label>
-        <input class="login" id="txUser">
-      </span><br>
-      <span class="llogin">
-        <label for="txPass">Senha</label>
-        <input type="password" id="txPass">
-      </span><br>
-      <center>
-        <span class="lerror" id="lbResLogin"></span>
-      </center>
+  <section class="footer">
+    <div id="menubar">
+      <ul class="level0">
+        <li>
+          <button>Sistema</button>
+          <ul class="level1">
+            <li>
+              <button cmd="win_chpwd">Alterar senha</button>
+            </li>
+            <li>
+              <button cmd="open">Abrir</button>
+            </li>
+            <li>
+              <button cmd="save">Salvar</button>
+            </li>
+            <li>
+              <button cmd="save_as">Salvar como</button>
+            </li>
+            <li>
+              <button cmd="do_exit">Sair</button>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <button>Ajuda</button>
+          <ul class="level1">
+            <li>
+              <button cmd="man">Manual</button>
+            </li>
+            <li>
+              <button cmd="win_about">Sobre</button>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
-
-    <div class="win" id="winChgPass">
-      <span class="linput">
-        <label for="txPassOld">Senha atual</label>
-        <input type="password" id="txPassOld">
-      </span><br>
-      <span class="linput">
-        <label for="txPassOne">Nova senha</label>
-        <input type="password" id="txPassOne">
-      </span><br>
-      <span class="linput">
-        <label for="txPassTwo">Confirmar</label>
-        <input type="password" id="txPassTwo">
-      </span><br>
-      <center>
-        <span class="lerror" id="lbResChPass"></span>
-      </center>
-    </div>
-
-    <div class="win" id="winGridLog">
-      <span class="linput">
-          <label for="txSchLog">Pesquisar por:</label>
-          <input id="txSchLog">
-          <button id="butSchLog" href="#">
-              <span class="ui-icon ui-icon-search"></span>
-          </button>
-      </span><br>
-      <table id="gridLog"></table>
-      <div id="pagerLog"></div>
-    </div>
-
-    <div class="win" id="winGridCadCli">
-    <span class="linput">
-        <label for="txSchCli">Pesquisar por:</label>
-        <input id="txSchCli">
-        <button id="butSchCli" href="#">
-            <span class="ui-icon ui-icon-search"></span>
-        </button>
-    </span><br>
-    <table id="gridCadCli"></table>
-    <div id="pagerCadCli"></div>
-</div>
-<div class="win" id="winFormCadCli">
-    <div id="tabsCadCli">
-        <ul>
-            <li><a href="#tabPessCli">Pessoal</a></li>
-            <li><a href="#tabAddrCli">Endereço</a></li>
-            <li><a href="#tabFoneCli">Telefones</a></li>
-            <li><a href="#tabWebCli">Internet</a></li>
-            <li><a href="#tabOutrosCli">Outros</a></li>
-        </ul>
-        <div id="tabPessCli">
-            <input type="hidden" id="id">
-            <span class="linput">
-                <label for="cbTipoCli">Tipo de cliente</label>
-                <select id="cbTipoCli">
-                    <option value="0">Pessoa Jurídica</option>
-                    <option value="1">Pessoa Física</option>
-                </select>
-            </span>
-            <br>
-            <span class="linput">
-                <label for="txCnpjCli">
-                    <span id="lbCnpjCli">CNPJ</span>
-                </label>
-                <input id="txCnpjCli" title="Somente números">
-                <button class="butForm" id="butGetCnpjCli" title="Detectar cliente" href="#">
-                    <span class="ui-icon ui-icon-arrowthick-1-e"></span>
-                </button>
-            </span><br>
-            <span class="linput">
-                <label for="txRgEstCli">
-                    <span id="lbRgEstCli">Inscr. Estadual</span>
-                </label>
-                <input id="txRgEstCli" title='Se Pessoa Jurídica, informe "0" para isento'>
-            </span><br>
-            <span class="linput">
-                <label for="txNomeCli">
-                    <span id="lbNomeCli">Razão Social</span>
-                </label>
-                <input class="upper" id="txNomeCli">
-            </span><br>
-            <span class="linput">
-                <label for="txApelCli">
-                    <span id="lbApelCli">Nome Fantasia</span>
-                </label>
-                <input class="upper" id="txApelCli">
-            </span><br>
-            <span class="linput">
-                <label for="txNascCli">
-                    <span id="lbNascCli">Data Abertura</span>
-                </label>
-                <input class="cbDate" id="txNascCli">
-                <span class="estciv">
-                    <label for="cbCivCli">Estado Civil</label>
-                    <select id="cbCivCli">
-                        <option value="0">Outro</option>
-                        <option value="1">Solteiro</option>
-                        <option value="2">Un. Estável</option>
-                        <option value="3">Casado</option>
-                        <option value="4">Viúvo</option>
-                        <option value="5">Separado</option>
-                        <option value="6">Divorciado</option>
-                    </select>
-                </span>
-            </span>
-            <br>
-            <span class="linput">
-                <label for="txAtivCli">
-                    <span id="lbAtivCli">Atividade</span>
-                </label>
-                <input class="upper" id="txAtivCli">
-            </span><br>
-            <span class="linput">
-                <label for="cbSitCli">Situação</label>
-                <select id="cbSitCli" title="Se suspenso, informe o motivo no campo Observações">
-                    <option value="0">Ativo</option>
-                    <option value="1">Inativo</option>
-                    <option value="2">Suspenso</option>
-                </select>
-            </span>
-        </div>
-        <div id="tabAddrCli">
-            <span class="linput">
-                <label for="txCepCli">CEP</label>
-                <input id="txCepCli">
-                <button class="butForm" id="butGetAddrCli" title="Detectar endereço" href="#">
-                    <span class="ui-icon ui-icon-arrowthick-1-e"></span>
-                </button>
-                <button class="butForm" id="butFindCepCli" title="Não sei o CEP" href="#">
-                    <span class="ui-icon ui-icon-search"></span>
-                </button>
-            </span><br>
-            <span class="linput">
-                <label for="txLogrCli">Logradouro</label>
-                <input class="upper" id="txLogrCli">
-            </span><br>
-            <span class="linput">
-                <label for="txNumCli">Numero</label>
-                <input class="upper" id="txNumCli">
-            </span><br>
-            <span class="linput">
-                <label for="txCompCli">Complemento</label>
-                <input class="upper" id="txCompCli">
-            </span><br>
-            <span class="linput">
-                <label for="txBairCli">Bairro</label>
-                <input class="upper" id="txBairCli">
-            </span><br>
-            <span class="linput">
-                <label for="txCidCli">Cidade</label>
-                <input class="upper" id="txCidCli">
-            </span><br>
-            <span class="linput">
-                <label for="txUfCli">UF</label>
-                <input class="upper" id="txUfCli">
-            </span><br>
-            <span class="linput">
-                <label for="txPtoRefCli">Pto. Referência</label>
-                <input class="upper" id="txPtoRefCli">
-            </span>
-        </div>
-        <div id="tabFoneCli">
-            <span class="linput">
-                <label for="txFone1Cli">Telefone 1</label>
-                <input class="fones" id="txFone1Cli">
-                <label for="txRamal1Cli">Ramal (Fone 1)</label>
-                <input class="ramais" id="txRamal1Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txFone2Cli">Telefone 2</label>
-                <input class="fones" id="txFone2Cli">
-                <label for="txRamal2Cli">Ramal (Fone 2)</label>
-                <input class="ramais" id="txRamal2Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txFone3Cli">Telefone 3</label>
-                <input class="fones" id="txFone3Cli">
-                <label for="txRamal3Cli">Ramal (Fone 3)</label>
-                <input class="ramais" id="txRamal3Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txFax1Cli">Fax 1</label>
-                <input class="fones" id="txFax1Cli">
-                <label for="txRamFax1Cli">Ramal (Fax 1)</label>
-                <input class="ramais" id="txRamFax1Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txFax2Cli">Fax 2</label>
-                <input class="fones" id="txFax2Cli">
-                <label for="txRamFax2Cli">Ramal (Fax 2)</label>
-                <input class="ramais" id="txRamFax2Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txCel1Cli">Celular 1</label>
-                <input class="fones" id="txCel1Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txCel2Cli">Celular 2</label>
-                <input class="fones" id="txCel2Cli">
-            </span><br>
-            <span class="linput">
-                <label for="txCel3Cli">Celular 3</label>
-                <input class="fones" id="txCel3Cli">
-            </span>
-        </div>
-        <div id="tabWebCli">
-            <br><br>
-            <span class="linput">
-                <label for="txEmailCli">E-mail</label>
-                <input id="txEmailCli">
-                <button class="butForm" id="butNewMailCli" title="Mandar mensagem" href="#">
-                    <span class="ui-icon ui-icon-mail-closed"></span>
-                </button>
-            </span><br><br><br>
-            <span class="linput">
-                <label for="txWebCli">Site</label>
-                <input id="txWebCli">
-                <button class="butForm" id="butGoWebCli" title="Ir para o site" href="#">
-                    <span class="ui-icon ui-icon-arrowthick-1-e"></span>
-                </button>
-            </span><br><br><br>
-            <span class="linput">
-                <label for="txOutroWebCli">Outro</label>
-                <input id="txOutroWebCli">
-            </span>
-        </div>
-        <div id="tabOutrosCli">
-            <label for="txObsCli">Observações</label><br>
-            <textarea class="upper" id="txObsCli"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="win" id="winGridCadProd">
-        <span class="linput">
-            <label for="txSchProd">Pesquisar por:</label>
-            <input id="txSchProd">
-            <button id="butSchProd" href="#">
-                <span class="ui-icon ui-icon-search"></span>
-            </button>
-        </span><br>
-        <table id="gridCadProd"></table>
-        <div id="pagerCadProd"></div>
-    </div>
-
-    <div class="win" id="winHelpAbout">
-    <div id="tabsAbout">
-        <ul>
-            <li><a href="#tabAbout">Sobre</a></li>
-            <li><a href="#tabLicense">Licença</a></li>
-        </ul>
-        <div id="tabAbout">
-            <table>
-                <tr>
-                    <td style="width:100px"><img src="img/left.png"></td>
-                    <td>
-                        Sistema de Gestão OpenHouse<br>Versão 0.0.20140420<br><br>
-                        Copyright &copy; 2014,<br>Flavio Augusto Cardoso Machado
-                        (<a href="https://twitter.com/facmachado" target="_blank">@facmachado</a>)<br><br>
-                        Bibliotecas usadas por este software têm suas licenças<br>
-                        relacionadas na aba "Licença".<br><br>
-                        "JESUS TE AMA. USE LINUX!"<br><br>
-                        <a id="callBitCoin" href="#"><img title="Contribua com nosso trabalho!" src="img/bitcoin.png"></a>
-                        <a id="callPayPal" href="#"><img title="Contribua com nosso trabalho!" src="img/paypal.png"></a>
-                        <form id="formPayPal" method="POST" action="https://www.paypal.com/cgi-bin/webscr" target="_blank">
-                            <input type="hidden" name="cmd" value="_s-xclick">
-                            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="tabLicense">
-                <textarea id="txLicense" readonly></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="win" id="winHelpAboutBitcoin">
-        <center>
-            <p>Use Ctrl+C (ou &#8984;+C no Mac)</p>
-            <span class="linput">
-                <input id="txBitAddr" readonly>
-                <button id="butBitAddr" class="butForm" title="Abrir carteira (se disponível)">
-                    <span class="ui-icon ui-icon-arrowthick-1-e"></span>
-                </button>
-            </span>
-        </center>
-    </div>
-  </footer>
+  </section>
 </body>
 
 </html>

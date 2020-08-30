@@ -8,43 +8,67 @@
 #
 
 
-name=$(basename "${0%.*}")
-tempfile="/tmp/$name-$(date +%s).tmp"
-#mask=·
-sep=,
-
 if test -z "$DBFILE"; then
   echo "Declare filename in variable DBFILE" >&2
   return 1
 fi
 if ! test -r "$DBFILE" -a -w  "$DBFILE"; then
   echo "File $DBFILE is unavailable" >&2
-  return 2
+  return 1
 fi
-if ! grep -qm1 "^id$sep" "$DBFILE"; then
-  echo "Header was not found in file $DBFILE" >&2
-  return 43
-fi
+#if ! grep -qm1 ^id, "$DBFILE"; then
+#  echo "Header was not found in file $DBFILE" >&2
+#  return 1
+#fi
 
 
-function has_key() {
-  grep -qi "^$1$sep" "$DBFILE"
+name=$(basename "${0%.*}")
+tempfile="/tmp/$name-$(date +%s).tmp"
+delim='"'
+mask='\"'
+sep=,
+
+#function has_key() {
+#  grep -qi "^$1$sep" "$DBFILE"
+#}
+
+function create_header() {
+  if show_header >/dev/null; then
+    echo "Header was already created in file $DBFILE" >&2
+    return 1
+  fi
+  if ((${#*} < 1)); then
+    echo 'You must enter at least ONE field to create header' >&2
+    return 1
+  fi
+
+  local fields="id $* ins upd del"
+  tr ' ' $sep <<<"$fields" >"$DBFILE"
 }
 
-#function sep_mask() {
-#  sed "s/$sep/$mask/"
-#}
+function create_id() {
+  grep -c '' "$DBFILE"
+}
 
-#function sep_unmask() {
-#  sed "s/$mask/$sep/"
-#}
+function delim_mask() {
+  sed "s/$delim/$mask/"
+}
 
-function show_fields() {
-  grep -m1 "^id$sep" "$DBFILE"
+function delim_unmask() {
+  sed "s/$mask/$delim/"
+}
+
+function show_header() {
+  grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
+}
+
+function show_row() {
+  grep -m1 "^$1$sep" "$DBFILE"
 }
 
 function urldecode() {
   local coded="${1//+/ }"
+
   printf %b "${coded//%/\\x}"
 }
 
@@ -75,16 +99,38 @@ function urlencode() {
 #}
 
 
-#function insert_record() {}
+# list_records(start, limit) { where del == false }
+
+function insert_record() {
+  IFS=$sep
+  local row
+  local now
+  read -r -a header < <(show_header)
+  read -r -a params <<<"$@"
+
+#  echo "${header[@]}"
+#  echo "${params[@]}"
+
+  row="$(create_id)${sep}"
+  for ((i=0; i<${#header[@]}; i++)); do
+    :
+  done
+  now="$(date +%s)${sep}"
+  row+="${now}${now}0"
+
+  echo "$row" #>>"$DBFILE"
+}
 
 function select_record() {
+  test $1 -eq 0 && return 0
+  IFS=$sep
   local data
-  IFS="$sep"
 
-  read -r -a fields < <(show_fields)
-  read -r -a records < <(grep -m1 "^$1$sep" "$DBFILE")
-  for ((i=0; i<${#fields[@]}; i++)); do
-    data+="${fields[$i]}=$(urlencode "${records[$i]}")&"
+  read -r -a header < <(show_header)
+  read -r -a row < <(show_row $1)
+  for ((i=0; i<${#header[@]}; i++)); do
+    test "${header[$i]}" == 'del' -a "${row[$i]}" == '1' && return 0
+    data+="${header[$i]}=$(urlencode ${row[$i]})&"
   done
   echo "${data:0:-1}"
 }

@@ -16,10 +16,6 @@ if ! test -r "$DBFILE" -a -w  "$DBFILE"; then
   echo "File $DBFILE is unavailable" >&2
   return 1
 fi
-#if ! grep -qm1 ^id, "$DBFILE"; then
-#  echo "Header was not found in file $DBFILE" >&2
-#  return 1
-#fi
 
 
 name=$(basename "${0%.*}")
@@ -27,10 +23,6 @@ tempfile="/tmp/$name-$(date +%s).tmp"
 delim='"'
 mask='\"'
 sep=,
-
-#function has_key() {
-#  grep -qi "^$1$sep" "$DBFILE"
-#}
 
 function create_header() {
   if show_header >/dev/null; then
@@ -42,20 +34,12 @@ function create_header() {
     return 1
   fi
 
-  local fields="id $* ins upd del"
-  tr ' ' $sep <<<"$fields" >"$DBFILE"
+  read -r -a fields <<<"id $* ins upd del"
+  wait_write && sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
 }
 
 function create_id() {
   grep -c '' "$DBFILE"
-}
-
-function delim_mask() {
-  sed "s/$delim/$mask/"
-}
-
-function delim_unmask() {
-  sed "s/$mask/$delim/"
 }
 
 function show_header() {
@@ -66,75 +50,78 @@ function show_row() {
   grep -m1 "^$1$sep" "$DBFILE"
 }
 
-function urldecode() {
-  local coded="${1//+/ }"
-
-  printf %b "${coded//%/\\x}"
+function wait_write() {
+  while lsof "$(readlink -f "$DBFILE")"; do :; done
 }
-
-function urlencode() {
-  local offset
-
-  for ((i=0; i<${#1}; i++)); do
-    offset="${1:i:1}"
-
-    case "$offset" in
-      [a-zA-Z0-9.~_-])
-        printf %s "$offset"
-      ;;
-      ' ')
-        printf +
-      ;;
-      *)
-        printf %%%X "'$offset"
-      ;;
-    esac
-  done
-}
-
-#function wait_write() {
-#  while lsof "$(readlink -f "$DBFILE")"; do
-#    sleep 0.1
-#  done
-#}
 
 
 # list_records(start, limit) { where del == false }
 
 function insert_record() {
   IFS=$sep
-  local row
-  local now
+  local key now row val
   read -r -a header < <(show_header)
-  read -r -a params <<<"$@"
-
-#  echo "${header[@]}"
-#  echo "${params[@]}"
+  read -r -a params <<<"$*"
 
   row="$(create_id)${sep}"
   for ((i=0; i<${#header[@]}; i++)); do
-    :
+    for param in "${params[@]}"; do
+      key="${param/=*/}"
+      val="${param/*=/}"
+      if [[ $key == "${header[$i]}" ]]; then
+        [[ $val =~ ^[0-9-.]+$ ]] &&  \
+          row+="${val}${sep}"    ||  \
+          row+="\"${val}\"${sep}"
+      fi
+    done
   done
   now="$(date +%s)${sep}"
   row+="${now}${now}0"
 
-  echo "$row" #>>"$DBFILE"
+  wait_write && echo "$row" >>"$DBFILE"
 }
 
 function select_record() {
-  test $1 -eq 0 && return 0
+  if (($1 == 0)); then
+    echo 'Value of primary key must start from 1' >&2
+    return 1
+  fi
+  if ! show_row "$1" >/dev/null; then
+    echo "Record $1 not found" >&2
+    return 1
+  fi
+
   IFS=$sep
   local data
-
   read -r -a header < <(show_header)
-  read -r -a row < <(show_row $1)
+  read -r -a row < <(show_row "$1")
+
   for ((i=0; i<${#header[@]}; i++)); do
-    test "${header[$i]}" == 'del' -a "${row[$i]}" == '1' && return 0
-    data+="${header[$i]}=$(urlencode ${row[$i]})&"
+    test "${header[i]}" == 'del'  \
+      -a "${row[i]}" == 1         \
+      && return 0
+    data+="${header[$i]}=${row[$i]} "
   done
+
   echo "${data:0:-1}"
 }
 
 #function update_record() {}
 
-#function delete_record() {}
+function delete_record() {
+  if (($1 == 0)); then
+    echo 'Value of primary key must start from 1' >&2
+    return 1
+  fi
+  if ! show_row "$1" >/dev/null; then
+    echo "Record $1 not found" >&2
+    return 1
+  fi
+
+  local new now old
+  now=$(date +%s)
+  old=$(show_row "$1")
+  new=$(sed -E "s/${sep}[0-9]+${sep}0$/${sep}${now}${sep}1/" <<<"$old")
+
+  wait_write && sed -i "s/^$old$/$new/" "$DBFILE"
+}

@@ -88,3 +88,49 @@ function delete_record() {
   mv "$tempfile" "$DBFILE"
   return 0
 }
+
+
+#function has_key() {
+#  grep -qi "^$1$sep" "$DBFILE"
+#}
+
+
+#function delim_mask() {
+#  sed "s/$delim/$mask/"
+#}
+
+#function delim_unmask() {
+#  sed "s/$mask/$delim/"
+#}
+
+
+#function urldecode() {
+#  local coded="${1//+/ }"
+#
+#  printf %b "${coded//%/\\x}"
+#}
+
+#function urlencode() {
+#  local offset
+#
+#  for ((i=0; i<${#1}; i++)); do
+#    offset="${1:i:1}"
+#
+#    case "$offset" in
+#      [a-zA-Z0-9.~_-])
+#        printf %s "$offset"
+#      ;;
+#      ' ')
+#        printf +
+#      ;;
+#      *)
+#        printf %%%X "'$offset"
+#      ;;
+#    esac
+#  done
+#}
+
+#if ! grep -qm1 ^id, "$DBFILE"; then
+#  echo "Header was not found in file $DBFILE" >&2
+#  return 1
+#fi

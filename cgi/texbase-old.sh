@@ -134,3 +134,6 @@ function delete_record() {
 #  echo "Header was not found in file $DBFILE" >&2
 #  return 1
 #fi
+
+#delim='"'
+#mask='\"'

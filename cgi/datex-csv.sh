@@ -18,10 +18,8 @@ if ! test -r "$DBFILE" -a -w  "$DBFILE"; then
 fi
 
 
-name=$(basename "${0%.*}")
-tempfile="/tmp/$name-$(date +%s).tmp"
-delim='"'
-mask='\"'
+#name=$(basename "${0%.*}")
+#tempfile="/tmp/$name-$(date +%s).tmp"
 sep=,
 
 function create_header() {
@@ -55,7 +53,16 @@ function wait_write() {
 }
 
 
-# list_records(start, limit) { where del == false }
+function list_records() {
+  if test -z "$*"; then
+    echo 'Put the start id and the quantity of records' >&2
+    return 1
+  fi
+
+  for ((r=$1; r<$1+$2; r++)); do
+    select_record "$r" 2>/dev/null | grep -v 'del=1'
+  done
+}
 
 function insert_record() {
   IFS=$sep
@@ -97,8 +104,8 @@ function select_record() {
   read -r -a row < <(show_row "$1")
 
   for ((i=0; i<${#header[@]}; i++)); do
-    test "${header[i]}" == 'del'  \
-      -a "${row[i]}" == 1         \
+    test "${header[$i]}" == 'del'  \
+      -a "${row[$i]}" == 1         \
       && return 0
     data+="${header[$i]}=${row[$i]} "
   done
@@ -106,6 +113,7 @@ function select_record() {
   echo "${data:0:-1}"
 }
 
+# update_record 3 nome='Testa de Ferro' obs='Teste de Brasa'
 #function update_record() {}
 
 function delete_record() {

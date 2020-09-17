@@ -75,9 +75,9 @@ function insert_record() {
     for param in "${params[@]}"; do
       key="${param/=*/}"
       val="${param/*=/}"
-      if [[ $key == "${header[$i]}" ]]; then
-        [[ $val =~ ^[0-9-.]+$ ]] &&  \
-          row+="${val}${sep}"    ||  \
+      if [[ $key == "${header[i]}" ]]; then
+        [[ $val =~ ^[0-9-]+$ ]] &&  \
+          row+="${val}${sep}"   ||  \
           row+="\"${val}\"${sep}"
       fi
     done
@@ -104,17 +104,49 @@ function select_record() {
   read -r -a row < <(show_row "$1")
 
   for ((i=0; i<${#header[@]}; i++)); do
-    test "${header[$i]}" == 'del'  \
-      -a "${row[$i]}" == 1         \
+    test "${header[i]}" == 'del'  \
+      -a "${row[i]}" == 1         \
       && return 0
-    data+="${header[$i]}=${row[$i]} "
+    data+="${header[i]}=${row[i]} "
   done
 
   echo "${data:0:-1}"
 }
 
 # update_record 3 nome='Testa de Ferro' obs='Teste de Brasa'
-#function update_record() {}
+function update_record() {
+  if (($1 == 0)); then
+    echo 'Value of primary key must start from 1' >&2
+    return 1
+  fi
+  if ! show_row "$1" >/dev/null; then
+    echo "Record $1 not found" >&2
+    return 1
+  fi
+
+  local -i now
+  local new old
+  now=$(date +%s)
+  old=$(show_row "$1")
+
+  IFS=$sep
+  read -r -a header < <(show_header)
+  read -r -a row <<<"$old"
+  read -r -a data <<<"${*:2}${sep}upd=${now}" # <-- FIXME: Ordenar campos
+
+  for ((i=0; i<${#header[@]}; i++)); do
+    if [[ ${data[i]/=*/} == ${header[i]} ]]; then
+      [[ ${data[i]/*=/} =~ ^[0-9-]+$ ]] &&  \
+        new+="${data[i]/*=/}${sep}"     ||  \
+        new+="\"${data[i]/*=/}\"${sep}"
+    else
+      new+="${row[i]}${sep}"
+      data=(0=0 ${data[@]})
+    fi
+  done
+
+  wait_write && sed -i "s/^$old$/${new:0:-1}/" "$DBFILE"
+}
 
 function delete_record() {
   if (($1 == 0)); then
@@ -126,7 +158,8 @@ function delete_record() {
     return 1
   fi
 
-  local new now old
+  local -i now
+  local new old
   now=$(date +%s)
   old=$(show_row "$1")
   new=$(sed -E "s/${sep}[0-9]+${sep}0$/${sep}${now}${sep}1/" <<<"$old")

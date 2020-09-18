@@ -1,13 +1,19 @@
 #!/bin/bash
 
 #
+#  datex-csv.sh - textual database library (CSV format)
+#
 #  Copyright (c) 2020 Flavio Augusto (@facmachado)
 #
 #  This software may be modified and distributed under the terms
 #  of the MIT license. See the LICENSE file for details.
 #
+#  Usage: source datex-csv.sh
+#
 
-
+#
+# Arquivo declarado em variável obrigatório
+#
 if test -z "$DBFILE"; then
   echo "Declare filename in variable DBFILE" >&2
   return 1
@@ -17,11 +23,20 @@ if ! test -r "$DBFILE" -a -w  "$DBFILE"; then
   return 1
 fi
 
-
+#
+# Constantes iniciais
+#
 #name=$(basename "${0%.*}")
 #tempfile="/tmp/$name-$(date +%s).tmp"
 sep=,
 
+#
+# Gera um cabeçalho CSV com os campos informados como parâmetros
+# @param {string} field
+# @param {string} field
+# ...
+# @returns {string}
+#
 function create_header() {
   if show_header >/dev/null; then
     echo "Header was already created in file $DBFILE" >&2
@@ -36,23 +51,43 @@ function create_header() {
   wait_write && sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
 }
 
+#
+# Gera um identificador de registro (ID)
+#
 function create_id() {
   grep -c '' "$DBFILE"
 }
 
+#
+# Mostra o cabeçalho
+# @returns {string}
+#
 function show_header() {
   grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
 }
 
+#
+# Mostra o registro informado (no formato CSV)
+# @param {number} id
+# @returns {string}
+#
 function show_row() {
   grep -m1 "^$1$sep" "$DBFILE"
 }
 
+#
+# Aguarda o arquivo ser liberado para escrita
+#
 function wait_write() {
   while lsof "$(readlink -f "$DBFILE")"; do :; done
 }
 
-
+#
+# Lista os registros não apagados (no formato chave=valor)
+# @param {number} start
+# @param {number} quantity
+# @returns {string}
+#
 function list_records() {
   if test -z "$*"; then
     echo 'Put the start id and the quantity of records' >&2
@@ -64,6 +99,12 @@ function list_records() {
   done
 }
 
+#
+# Cria um novo registro
+# @param {string} field=value
+# @param {string} field=value
+# ...
+#
 function insert_record() {
   IFS=$sep
   local key now row val
@@ -88,6 +129,11 @@ function insert_record() {
   wait_write && echo "$row" >>"$DBFILE"
 }
 
+#
+# Mostra o registro informado (no formato chave=valor)
+# @param {number} id
+# @returns {string}
+#
 function select_record() {
   if (($1 == 0)); then
     echo 'Value of primary key must start from 1' >&2
@@ -113,7 +159,14 @@ function select_record() {
   echo "${data:0:-1}"
 }
 
-# update_record 3 nome='Testa de Ferro' obs='Teste de Brasa'
+#
+# Modifica os dados do registro informado
+# Ex: update_record 3 nome='Testa de Ferro' obs='Teste de Brasa'
+# @param {number} id
+# @param {string} field=value
+# @param {string} field=value
+# ...
+#
 function update_record() {
   if (($1 == 0)); then
     echo 'Value of primary key must start from 1' >&2
@@ -148,6 +201,10 @@ function update_record() {
   wait_write && sed -i "s/^$old$/${new:0:-1}/" "$DBFILE"
 }
 
+#
+# "Apaga" o registro (marca para recuperação ou exclusão definitiva)
+# @param {number} id
+#
 function delete_record() {
   if (($1 == 0)); then
     echo 'Value of primary key must start from 1' >&2

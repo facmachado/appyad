@@ -3,7 +3,7 @@
 #
 #  randfunc.sh - random functions library
 #
-#  Copyright (C) 2020 Flavio Augusto (@facmachado)
+#  Copyright (c) 2020 Flavio Augusto (@facmachado)
 #
 #  This software may be modified and distributed under the terms
 #  of the MIT license. See the LICENSE file for details.
@@ -20,10 +20,12 @@
 # @returns {string}
 #
 function random_draw() {
+  local c d e q s t
   q=$((${1:-1}))
   t=$((${2:-0}))
   d=$(($(printf %s ${q#-} | wc -c)))
   e=$(($(date -ud "${t#-} seconds" +%s)))
+
   while (($(date -u +%s) <= e)); do
     c=$(($(bc <<<"$(random_hash $d)")))
     s=$((c % q + 1))
@@ -34,6 +36,7 @@ function random_draw() {
       ((t < 0)) && printf "\\r%0.${d}d" "$c"
     fi
   done
+
   printf "\\r%0.${d}d" "$s"
 }
 
@@ -46,7 +49,10 @@ function random_guid() {
   [ -x "$(command -v uuidgen)" ] &&  \
     uuidgen -r | tr -d \\n &&        \
     return 0
+
+  local r
   r=$(random_hash 32 16)
+
   printf %s "${r:0:8}-${r:8:4}-${r:12:4}-${r:16:4}-${r:20:12}"
 }
 
@@ -61,8 +67,11 @@ function random_hash() { (
   usage() {
     echo 'Usage: random_hash <size> [2|8|10|16]'
   }
+
+  local b l
   l=$(($1))
   b=$((${2:-10}))
+
   ((l < 1)) && usage && return 0
   case $b in
     2)   readonly r='01'                                        ;;
@@ -71,6 +80,7 @@ function random_hash() { (
     16)  readonly r='0-9a-f'                                    ;;
     *)   echo -e "Radix not valid!\\n$(usage)" >&2 && return 1  ;;
   esac
+
   tr -dc $r </dev/urandom | head -c $l
 ) }
 
@@ -80,35 +90,12 @@ function random_hash() { (
 # @returns {string}
 #
 function random_word() {
+  local l x
   x=$(($1))
   ((x < 1)) &&                          \
     echo 'Usage: random_word <max>' &&  \
     return 0
   l=$((RANDOM % x + 1))
+
   tr -dc '[:graph:]' </dev/urandom | head -c $l
-}
-
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
-
-#
-# Converte uma string hexadecimal em dados binários
-# @param {string} hex
-# @returns {blob}
-#
-function hex2asciidata() {
-  data=$(tr [:upper:] [:lower:] <<<"$1" | sed 's/^[\0]x//;s/h$//')
-  test $((${#data} % 2)) -ne 0 && data=0$data
-  xxd -p -r <<<"$data"
-}
-
-#
-# Converte dados binários em string hexadecimal
-# @param {blob} data
-# @returns {string}
-#
-function asciidata2hex() {
-  printf %s "$1" | xxd -p | tr -d \\n
 }

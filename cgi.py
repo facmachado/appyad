@@ -9,13 +9,20 @@
 
 
 import signal
-from http.server import HTTPServer, HTTPStatus, CGIHTTPRequestHandler
+from http.server import HTTPServer, SimpleHTTPRequestHandler, CGIHTTPRequestHandler
 
 HOST = '127.0.0.1'
 PORT = 65432
 
 class Handler(CGIHTTPRequestHandler):
     cgi_directories = ['/cgi']
+
+    def do_GET(self):
+        if '/public/' in self.path:
+            SimpleHTTPRequestHandler.do_GET(self)
+        else:
+            self.send_error(404, 'Maybe you mean "/public/index.html"')
+        return None
 
     def end_headers(self):
         self.send_header('Pragma', 'no-cache')
@@ -25,11 +32,6 @@ class Handler(CGIHTTPRequestHandler):
         self.send_header('X-UA-Compatible', 'IE=edge, chrome=1')
         self._headers_buffer.append(b'\r\n')
         self.flush_headers()
-
-    def list_directory(self, path):
-        self.send_error(HTTPStatus.FORBIDDEN,
-            'CGI script is not a plain file (%r)' % self.path)
-        return None
 
 def stop_serving(signum, frame):
     httpd.server_close()

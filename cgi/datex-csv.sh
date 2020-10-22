@@ -53,6 +53,7 @@ function create_header() {
 
 #
 # Gera um identificador de registro (ID)
+# @returns {number}
 #
 function create_id() {
   grep -c '' "$DBFILE"

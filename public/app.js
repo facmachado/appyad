@@ -29,7 +29,7 @@ var worker = new Worker('worker.js');
 }))(jQuery);
 
 /* Disable $.ajax in favor of fetch and worker */
-$.ajax = $.get = $.post = false;
+// $.ajax = $.get = $.post = false;
 
 
 /* Display/Replace toast messages */

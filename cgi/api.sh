@@ -153,11 +153,6 @@ echo 'Content-Type: application/json'
 echo
 
 # uname -a
-if [ -z "$QUERY_STRING" ]; then
-  app_error
-  exit 1
-fi
-
 auth_logoff
 
 # $.ajax({

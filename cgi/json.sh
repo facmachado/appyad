@@ -32,8 +32,7 @@
 # -----------------------------------------------------------------------------
 
 function output_json() {
-  local awkfile="$(dirname ${BASH_SOURCE})/output_json.awk"
-  awk -f $awkfile | jq -cM .
+  awk -f "$(dirname ${BASH_SOURCE})/output_json.awk"
 }
 
 # -----------------------------------------------------------------------------

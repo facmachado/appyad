@@ -10,7 +10,7 @@
 #
 
 function output() {
-  if (n++) {
+  if (n++ && line) {
     printf ","
   }
   if (line) {
@@ -29,7 +29,7 @@ BEGIN {
   printf "["
 }
 
-NF==0 {
+NF == 0 {
   output()
   next
 }

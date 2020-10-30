@@ -83,22 +83,51 @@ function wait_write() {
   while lsof "$(readlink -f "$DBFILE")"; do :; done
 }
 
+# -----------------------------------------------------------------------------
+
 #
-# Lista os registros não apagados (no formato chave=valor)
-# @param {number} start
-# @param {number} quantity
+# Lista os registros não apagados (no formato chave = valor)
+# @param {number} lines (0 => all)
+# @param {number} start = 1
 # @returns {string}
 #
 function list_records() {
-  if test -z "$*"; then
-    echo 'Put the start id and the quantity of records' >&2
-    return 1
-  fi
+  local awkprg
+  local -i lines start
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/select.awk"
+  ((${1:-0} < 1)) && lines=$(($(wc -l <"$DBFILE") - 1)) || lines=$1
+  ((${2:-0} > 0)) && start=$2 || start=1
 
-  for ((r=$1; r<$1+$2; r++)); do
-    select_record "$r" 2>/dev/null | grep -v 'del=1'
-  done
+  awk -f "$awkprg"                \
+    -v start=$((start + 1))       \
+    -v finish=$((start + lines))  \
+    "$DBFILE"
 }
+
+#
+# Busca por palavra-chave nos registros
+# @param {string} query
+# @returns {string}
+#
+function search_records() {
+  local awkprg
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/select.awk"
+
+  test "$1" && awk -f "$awkprg"  \
+    -v query="$1"                \
+    "$DBFILE"
+}
+
+#
+# Mostra o registro requisitado
+# @param {number} line
+# @returns {string}
+#
+function select_record() {
+  ((${1:-0} > 0)) && list_records 1 "$1"
+}
+
+# -----------------------------------------------------------------------------
 
 #
 # Cria um novo registro
@@ -128,36 +157,6 @@ function insert_record() {
   row+="${now}${now}0"
 
   wait_write && echo "$row" >>"$DBFILE"
-}
-
-#
-# Mostra o registro informado (no formato chave=valor)
-# @param {number} id
-# @returns {string}
-#
-function select_record() {
-  if (($1 == 0)); then
-    echo 'Value of primary key must start from 1' >&2
-    return 1
-  fi
-  if ! show_row "$1" >/dev/null; then
-    echo "Record $1 not found" >&2
-    return 1
-  fi
-
-  IFS=$sep
-  local data
-  read -r -a header < <(show_header)
-  read -r -a row < <(show_row "$1")
-
-  for ((i=0; i<${#header[@]}; i++)); do
-    test "${header[i]}" == 'del'  \
-      -a "${row[i]}" == 1         \
-      && return 0
-    data+="${header[i]}=${row[i]} "
-  done
-
-  echo "${data:0:-1}"
 }
 
 #
@@ -203,7 +202,7 @@ function update_record() {
 }
 
 #
-# "Apaga" o registro (marca para recuperação ou exclusão definitiva)
+# "Apaga" o registro (marca para possível recuperação)
 # @param {number} id
 #
 function delete_record() {

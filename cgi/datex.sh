@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #
-#  datex-csv.sh - textual database library (CSV format)
+#  datex.sh - textual database library
 #
 #  Copyright (c) 2020 Flavio Augusto (@facmachado)
 #
 #  This software may be modified and distributed under the terms
 #  of the MIT license. See the LICENSE file for details.
 #
-#  Usage: source datex-csv.sh
+#  Usage: source datex.sh
 #
 
 #
@@ -136,27 +136,35 @@ function select_record() {
 # ...
 #
 function insert_record() {
-  IFS=$sep
-  local key now row val
-  read -r -a header < <(show_header)
-  read -r -a params <<<"$*"
+  # IFS=$sep
+  # local key now row val
+  # read -r -a header < <(show_header)
+  # read -r -a params <<<"$*"
+  #
+  # row="$(create_id)${sep}"
+  # for ((i=0; i<${#header[@]}; i++)); do
+  #   for param in "${params[@]}"; do
+  #     key="${param/=*/}"
+  #     val="${param/*=/}"
+  #     if [[ $key == "${header[i]}" ]]; then
+  #       [[ $val =~ ^[0-9-]+$ ]] &&  \
+  #         row+="${val}${sep}"   ||  \
+  #         row+="\"${val}\"${sep}"
+  #     fi
+  #   done
+  # done
+  # now="$(date +%s)${sep}"
+  # row+="${now}${now}0"
+  #
+  # wait_write && echo "$row" >>"$DBFILE"
 
-  row="$(create_id)${sep}"
-  for ((i=0; i<${#header[@]}; i++)); do
-    for param in "${params[@]}"; do
-      key="${param/=*/}"
-      val="${param/*=/}"
-      if [[ $key == "${header[i]}" ]]; then
-        [[ $val =~ ^[0-9-]+$ ]] &&  \
-          row+="${val}${sep}"   ||  \
-          row+="\"${val}\"${sep}"
-      fi
-    done
-  done
-  now="$(date +%s)${sep}"
-  row+="${now}${now}0"
+  # entra => field=value field=value field=value ... (input)
+  # entra => field,field,field, ... (csv) (awk)
+  # processa => (awk)
+  # sai => field = value \n field = value \n field = value \n ... (record)
 
-  wait_write && echo "$row" >>"$DBFILE"
+  local params now
+  params="$@"
 }
 
 #

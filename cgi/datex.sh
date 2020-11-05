@@ -94,7 +94,7 @@ function wait_write() {
 function list_records() {
   local awkprg
   local -i lines start
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/select.awk"
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_read.awk"
   ((${1:-0} < 1)) && lines=$(($(wc -l <"$DBFILE") - 1)) || lines=$1
   ((${2:-0} > 0)) && start=$2 || start=1
 
@@ -111,7 +111,7 @@ function list_records() {
 #
 function search_records() {
   local awkprg
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/select.awk"
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_read.awk"
 
   test "$1" && awk -f "$awkprg"  \
     -v query="$1"                \
@@ -163,8 +163,11 @@ function insert_record() {
   # processa => (awk)
   # sai => field = value \n field = value \n field = value \n ... (record)
 
-  local params now
-  params="$@"
+  local awkprg
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_create.awk"
+
+  # test "$*" && \
+  awk -f "$awkprg" "$DBFILE" "$@"
 }
 
 #

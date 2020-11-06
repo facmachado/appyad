@@ -8,12 +8,8 @@
 #
 
 function output() {
-  if (n++ && line) {
-    printf ","
-  }
-  if (line) {
-    print line
-  }
+  if (n++ && line) printf ","
+  if (line) printf "{" line "}"
   line = ""
 }
 
@@ -24,6 +20,7 @@ function trim(x) {
 }
 
 BEGIN {
+  printf "["
 }
 
 NF == 0 {
@@ -32,14 +29,16 @@ NF == 0 {
 }
 
 {
-  if (line) {
-    line = line ","
-  }
+  if (line) line = line ","
   i = index($0, "=")
-  value = substr($0, i + 2)
-  line = line value
+  key = "\"" trim(substr($0, 1, i - 1)) "\""
+  value = ((substr($0, i + 2) ~ /^[0-9]+$/) \
+    ? substr($0, i + 2) \
+    : "\"" substr($0, i + 2) "\"")
+  line = line key ":" value
 }
 
 END {
   output()
+  print "]"
 }

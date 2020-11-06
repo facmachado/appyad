@@ -9,12 +9,18 @@
 
 function parse() {
   for (i = 1; i <= NF; i++) {
-    line = line col[i] " = " $i
+    line = line col[i] " = " trim($i)
     if (i < NF) {
       line = line "\n"
     }
   }
   line = line "\n\n"
+}
+
+function trim(x) {
+  sub(/^\"/, "", x)
+  sub(/\"$/, "", x)
+  return x
 }
 
 BEGIN {

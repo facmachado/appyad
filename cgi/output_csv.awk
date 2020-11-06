@@ -6,16 +6,9 @@
 #  This software may be modified and distributed under the terms
 #  of the MIT license. See the LICENSE file for details.
 #
-#  Origin: https://stackoverflow.com/a/36049307
-#
 
 function output() {
-  if (n++ && line) {
-    printf ","
-  }
-  if (line) {
-    printf "{" line "}"
-  }
+  if (line) print line
   line = ""
 }
 
@@ -26,7 +19,7 @@ function trim(x) {
 }
 
 BEGIN {
-  printf "["
+  line = ""
 }
 
 NF == 0 {
@@ -35,20 +28,14 @@ NF == 0 {
 }
 
 {
-  if (line) {
-    line = line ","
-  }
+  if (line) line = line ","
   i = index($0, "=")
-  key = "\"" trim(substr($0, 1, i - 1)) "\""
-  if (substr($0, i + 2) ~ /^[0-9]+$/) {
-    value = substr($0, i + 2)
-  } else {
-    value = "\"" substr($0, i + 2) "\""
-  }
-  line = line key ":" value
+  value = ((substr($0, i + 2) ~ /^[0-9]+$/) \
+    ? substr($0, i + 2) \
+    : "\"" substr($0, i + 2) "\"")
+  line = line value
 }
 
 END {
   output()
-  print "]"
 }

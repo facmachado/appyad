@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#  datex.sh - textual database library
+#  datex - textual database library
 #
 #  Copyright (c) 2020 Flavio Augusto (@facmachado)
 #
@@ -31,7 +31,6 @@ output_csv="$src_dir/output_csv.awk"
 crud_create="$src_dir/crud_create.awk"
 crud_update="$src_dir/crud_update.awk"
 crud_read="$src_dir/crud_read.awk"
-sep=,
 
 #
 # Gera um cabeçalho CSV com os campos informados como parâmetros
@@ -40,7 +39,14 @@ sep=,
 # ...
 # @returns {string}
 #
-function create_header() {
+function create_header() { (
+  local sep
+  sep=,
+
+  function show_header() {
+    grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
+  }
+
   if show_header >/dev/null; then
     echo "Header was already created in file $DBFILE" >&2
     return 1
@@ -52,15 +58,7 @@ function create_header() {
 
   read -r -a fields <<<"id $* ins upd del"
   wait_write && sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
-}
-
-#
-# Mostra o cabeçalho
-# @returns {string}
-#
-function show_header() {
-  grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
-}
+) }
 
 #
 # Aguarda o arquivo ser liberado para escrita

@@ -1,6 +1,8 @@
 #!/usr/bin/awk -f
 
 #
+#  datex - textual database library
+#
 #  Copyright (c) 2020 Flavio Augusto (@facmachado)
 #
 #  This software may be modified and distributed under the terms

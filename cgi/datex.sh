@@ -51,7 +51,7 @@ function create_header() {
   fi
 
   read -r -a fields <<<"id $* ins upd del"
-  sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
+  wait_write && sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
 }
 
 #
@@ -60,6 +60,13 @@ function create_header() {
 #
 function show_header() {
   grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
+}
+
+#
+# Aguarda o arquivo ser liberado para escrita
+#
+function wait_write() {
+  while lsof "$(readlink -f "$DBFILE")"; do :; done
 }
 
 #
@@ -104,9 +111,11 @@ function select_record() {
 # ...
 #
 function insert_record() {
-  test "$*" &&                            \
-  awk -f "$crud_create" "$DBFILE" "$@" |  \
-  awk -f "$output_csv" >>"$DBFILE"
+  local new output
+  output="awk -f $output_csv"
+  new=$(awk -f "$crud_create" "$DBFILE" "$@" | $output)
+
+  test "$*" && wait_write && echo "$new" >>"$DBFILE"
 }
 
 #
@@ -118,11 +127,12 @@ function insert_record() {
 # ...
 #
 function update_record() {
-  local old new
-  old=$(select_record "$1")
-  new=$(awk -f "$crud_update" "$DBFILE" "$@" 2>/dev/null | awk -f "$output_csv")
+  local old new output
+  output="awk -f $output_csv"
+  old=$(select_record "$1" | $output)
+  new=$(awk -f "$crud_update" "$DBFILE" "$@" 2>/dev/null | $output)
 
-  test "$1" && sed -i "s/^$old$/$new/" "$DBFILE"
+  test "$1" && wait_write && sed -i "s/^$old$/$new/" "$DBFILE"
 }
 
 #

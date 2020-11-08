@@ -18,7 +18,7 @@ if test -z "$DBFILE"; then
   echo "Declare filename in variable DBFILE" >&2
   return 1
 fi
-if ! test -r "$DBFILE" -a -w  "$DBFILE"; then
+if ! test -r "$DBFILE" -a -w "$DBFILE"; then
   echo "File $DBFILE is unavailable" >&2
   return 1
 fi
@@ -26,8 +26,11 @@ fi
 #
 # Constantes iniciais
 #
-#name=$(basename "${0%.*}")
-#tempfile="/tmp/$name-$(date +%s).tmp"
+src_dir=$(dirname "${BASH_SOURCE[0]}")
+output_csv="$src_dir/output_csv.awk"
+crud_create="$src_dir/crud_create.awk"
+crud_update="$src_dir/crud_update.awk"
+crud_read="$src_dir/crud_read.awk"
 sep=,
 
 #
@@ -48,15 +51,7 @@ function create_header() {
   fi
 
   read -r -a fields <<<"id $* ins upd del"
-  wait_write && sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
-}
-
-#
-# Gera um identificador de registro (ID)
-# @returns {number}
-#
-function create_id() {
-  grep -c '' "$DBFILE"
+  sed "s/ /$sep/g" <<<"${fields[@]}" >"$DBFILE"
 }
 
 #
@@ -68,37 +63,17 @@ function show_header() {
 }
 
 #
-# Mostra o registro informado (no formato CSV)
-# @param {number} id
-# @returns {string}
-#
-function show_row() {
-  grep -m1 "^$1$sep" "$DBFILE"
-}
-
-#
-# Aguarda o arquivo ser liberado para escrita
-#
-function wait_write() {
-  while lsof "$(readlink -f "$DBFILE")"; do :; done
-}
-
-# -----------------------------------------------------------------------------
-
-#
 # Lista os registros não apagados (no formato chave = valor)
 # @param {number} lines (0 => all)
-# @param {number} start = 1
+# @param {number} start (1)
 # @returns {string}
 #
 function list_records() {
-  local awkprg
   local -i lines start
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_read.awk"
   ((${1:-0} < 1)) && lines=$(($(wc -l <"$DBFILE") - 1)) || lines=$1
   ((${2:-0} > 0)) && start=$2 || start=1
 
-  awk -f "$awkprg"                \
+  awk -f "$crud_read"             \
     -v start=$((start + 1))       \
     -v finish=$((start + lines))  \
     "$DBFILE"
@@ -110,12 +85,7 @@ function list_records() {
 # @returns {string}
 #
 function search_records() {
-  local awkprg
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_read.awk"
-
-  test "$1" && awk -f "$awkprg"  \
-    -v query="$1"                \
-    "$DBFILE"
+  test "$1" && awk -f "$crud_read" -v query="$1" "$DBFILE"
 }
 
 #
@@ -127,8 +97,6 @@ function select_record() {
   ((${1:-0} > 0)) && list_records 1 "$1"
 }
 
-# -----------------------------------------------------------------------------
-
 #
 # Cria um novo registro
 # @param {string} field=value
@@ -136,11 +104,9 @@ function select_record() {
 # ...
 #
 function insert_record() {
-  local awkprg awkfmt
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_create.awk"
-  awkfmt="$(dirname "${BASH_SOURCE[0]}")/output_csv.awk"
-
-  test "$*" && awk -f "$awkprg" "$DBFILE" "$@" | awk -f "$awkfmt"
+  test "$*" &&                            \
+  awk -f "$crud_create" "$DBFILE" "$@" |  \
+  awk -f "$output_csv" >>"$DBFILE"
 }
 
 #
@@ -152,13 +118,11 @@ function insert_record() {
 # ...
 #
 function update_record() {
-  local awkprg awkfmt
-  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_update.awk"
-  awkfmt="$(dirname "${BASH_SOURCE[0]}")/output_csv.awk"
+  local old new
+  old=$(select_record "$1")
+  new=$(awk -f "$crud_update" "$DBFILE" "$@" 2>/dev/null | awk -f "$output_csv")
 
-  test "$*" && awk -f "$awkprg" "$DBFILE" "$@" 2>/dev/null | awk -f "$awkfmt"
-
-  # wait_write && sed -i "s/^$old$/${new:0:-1}/" "$DBFILE"
+  test "$1" && sed -i "s/^$old$/$new/" "$DBFILE"
 }
 
 #

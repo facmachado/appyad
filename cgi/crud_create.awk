@@ -9,40 +9,36 @@
 
 BEGIN {
   FS = ","
+  now = systime()
 }
 
 BEGINFILE {
   total = 0
-  now = systime()
   while (getline <FILENAME) {
     total++
   }
 }
 
 NR == 1 {
+  split($0, head)
   for (i = 1; i <= NF; i++) {
-    col[$i] = ""
     for (j = 0; j < ARGC; j++) {
       if (ARGV[j] ~ "=") {
         key = ARGV[j]
         value = ARGV[j]
         sub(/=.*$/, "", key)
         sub(/^.*=/, "", value)
-        if (key == $i) {
-          col[$i] = value
+        if (head[i] == key) {
+          row[i] = value
         }
       }
     }
   }
-  col["del"] = 0
-  col["ins"] = now
-  col["upd"] = now
-  col["id"] = total
+  row[1] = total
+  row[NF - 2] = now
+  row[NF - 1] = now
+  row[NF] = 0
   for (i = 1; i <= NF; i++) {
-    line = line $i " = " col[$i] "\n"
+    print head[i] " = " row[i]
   }
-}
-
-END {
-  print substr(line, 1, length(line) - 1)
 }

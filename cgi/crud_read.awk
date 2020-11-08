@@ -9,7 +9,7 @@
 
 function parse() {
   for (i = 1; i <= NF; i++) {
-    line = line col[i] " = " trim($i)
+    line = line head[i] " = " trim($i)
     if (i < NF) {
       line = line "\n"
     }
@@ -28,9 +28,7 @@ BEGIN {
 }
 
 NR == 1 {
-  for (i = 1; i <= NF; i++) {
-    col[i] = $i
-  }
+  split($0, head)
 }
 
 NR == start, NR == finish {

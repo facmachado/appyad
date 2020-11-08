@@ -136,38 +136,11 @@ function select_record() {
 # ...
 #
 function insert_record() {
-  # IFS=$sep
-  # local key now row val
-  # read -r -a header < <(show_header)
-  # read -r -a params <<<"$*"
-  #
-  # row="$(create_id)${sep}"
-  # for ((i=0; i<${#header[@]}; i++)); do
-  #   for param in "${params[@]}"; do
-  #     key="${param/=*/}"
-  #     val="${param/*=/}"
-  #     if [[ $key == "${header[i]}" ]]; then
-  #       [[ $val =~ ^[0-9-]+$ ]] &&  \
-  #         row+="${val}${sep}"   ||  \
-  #         row+="\"${val}\"${sep}"
-  #     fi
-  #   done
-  # done
-  # now="$(date +%s)${sep}"
-  # row+="${now}${now}0"
-  #
-  # wait_write && echo "$row" >>"$DBFILE"
-
-  # entra => field=value field=value field=value ... (input)
-  # entra => field,field,field, ... (csv) (awk)
-  # processa => (awk)
-  # sai => field = value \n field = value \n field = value \n ... (record)
-
-  local awkprg
+  local awkprg awkfmt
   awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_create.awk"
+  awkfmt="$(dirname "${BASH_SOURCE[0]}")/output_csv.awk"
 
-  # test "$*" && \
-  awk -f "$awkprg" "$DBFILE" "$@"
+  test "$*" && awk -f "$awkprg" "$DBFILE" "$@" | awk -f "$awkfmt"
 }
 
 #
@@ -179,37 +152,13 @@ function insert_record() {
 # ...
 #
 function update_record() {
-  if (($1 == 0)); then
-    echo 'Value of primary key must start from 1' >&2
-    return 1
-  fi
-  if ! show_row "$1" >/dev/null; then
-    echo "Record $1 not found" >&2
-    return 1
-  fi
+  local awkprg awkfmt
+  awkprg="$(dirname "${BASH_SOURCE[0]}")/crud_update.awk"
+  awkfmt="$(dirname "${BASH_SOURCE[0]}")/output_csv.awk"
 
-  local -i now
-  local new old
-  now=$(date +%s)
-  old=$(show_row "$1")
+  test "$*" && awk -f "$awkprg" "$DBFILE" "$@" 2>/dev/null | awk -f "$awkfmt"
 
-  IFS=$sep
-  read -r -a header < <(show_header)
-  read -r -a row <<<"$old"
-  read -r -a data <<<"${*:2}${sep}upd=${now}" # <-- FIXME: Ordenar campos
-
-  for ((i=0; i<${#header[@]}; i++)); do
-    if [[ ${data[i]/=*/} == ${header[i]} ]]; then
-      [[ ${data[i]/*=/} =~ ^[0-9-]+$ ]] &&  \
-        new+="${data[i]/*=/}${sep}"     ||  \
-        new+="\"${data[i]/*=/}\"${sep}"
-    else
-      new+="${row[i]}${sep}"
-      data=(0=0 ${data[@]})
-    fi
-  done
-
-  wait_write && sed -i "s/^$old$/${new:0:-1}/" "$DBFILE"
+  # wait_write && sed -i "s/^$old$/${new:0:-1}/" "$DBFILE"
 }
 
 #
@@ -217,20 +166,5 @@ function update_record() {
 # @param {number} id
 #
 function delete_record() {
-  if (($1 == 0)); then
-    echo 'Value of primary key must start from 1' >&2
-    return 1
-  fi
-  if ! show_row "$1" >/dev/null; then
-    echo "Record $1 not found" >&2
-    return 1
-  fi
-
-  local -i now
-  local new old
-  now=$(date +%s)
-  old=$(show_row "$1")
-  new=$(sed -E "s/${sep}[0-9]+${sep}0$/${sep}${now}${sep}1/" <<<"$old")
-
-  wait_write && sed -i "s/^$old$/$new/" "$DBFILE"
+  test "$1" && update_record "$1" del=1
 }

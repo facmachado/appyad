@@ -8,7 +8,9 @@
 #
 
 function output() {
-  if (line) print line
+  if (line) {
+    print line
+  }
   line = ""
 }
 
@@ -28,7 +30,9 @@ NF == 0 {
 }
 
 {
-  if (line) line = line ","
+  if (line) {
+    line = line ","
+  }
   i = index($0, "=")
   value = ((substr($0, i + 2) ~ /^[0-9]+$/) \
     ? substr($0, i + 2) \

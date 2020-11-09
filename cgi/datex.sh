@@ -33,7 +33,15 @@ crud_update="$src_dir/crud_update.awk"
 crud_read="$src_dir/crud_read.awk"
 
 #
+# Aguarda o arquivo ser liberado para escrita
+#
+function wait_write() {
+  while lsof "$(readlink -f "$DBFILE")" >/dev/null 2>&1; do :; done
+}
+
+#
 # Gera um cabeçalho CSV com os campos informados como parâmetros
+# Ex: create_header nome ender cidade uf cep obs
 # @param {string} field
 # @param {string} field
 # ...
@@ -44,10 +52,11 @@ function create_header() { (
   sep=,
 
   function show_header() {
-    grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"
+    grep -m1 "^id${sep}.*${sep}ins${sep}upd${sep}del$" "$DBFILE"  \
+      >/dev/null 2>&1
   }
 
-  if show_header >/dev/null; then
+  if show_header; then
     echo "Header was already created in file $DBFILE" >&2
     return 1
   fi
@@ -61,14 +70,8 @@ function create_header() { (
 ) }
 
 #
-# Aguarda o arquivo ser liberado para escrita
-#
-function wait_write() {
-  while lsof "$(readlink -f "$DBFILE")"; do :; done
-}
-
-#
 # Lista os registros não apagados (no formato chave = valor)
+# Ex: list_records 2 3 (parâmetros opcionais)
 # @param {number} lines (0 => all)
 # @param {number} start (1)
 # @returns {string}
@@ -86,6 +89,7 @@ function list_records() {
 
 #
 # Busca por palavra-chave nos registros
+# Ex: search_records Teste
 # @param {string} query
 # @returns {string}
 #
@@ -95,6 +99,7 @@ function search_records() {
 
 #
 # Mostra o registro requisitado
+# Ex: select_record 3
 # @param {number} line
 # @returns {string}
 #
@@ -104,6 +109,7 @@ function select_record() {
 
 #
 # Cria um novo registro
+# Ex: insert_record nome='Testa de Ferro' obs='Teste de Brasa'
 # @param {string} field=value
 # @param {string} field=value
 # ...
@@ -135,6 +141,7 @@ function update_record() {
 
 #
 # "Apaga" o registro (marca para possível recuperação)
+# Ex: delete_record 3
 # @param {number} id
 #
 function delete_record() {

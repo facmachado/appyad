@@ -34,7 +34,7 @@ function do_exit() {
 trap do_exit SIGINT
 trap do_exit SIGTERM
 
-$python cgi.py 2>/dev/null & echo $! >"$pidfile"
+$python httpd.py 2>/dev/null & echo $! >"$pidfile"
 
 $yad --width=640 --height=480 --maximized --no-buttons  \
   --no-escape --borders=0 --window-icon='favicon.ico'   \

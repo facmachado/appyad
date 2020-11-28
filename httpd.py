@@ -26,7 +26,7 @@ class Handler(CGIHTTPRequestHandler):
                     f.close()
         else:
             self.send_error(HTTPStatus.NOT_IMPLEMENTED,
-                            'Can only GET to non-CGI scripts')
+                            'Can only GET to non-CGI documents')
 
     def list_directory(self, path):
         pass
